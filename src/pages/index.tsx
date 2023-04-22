@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   const { push } = useRouter();
 
   useEffect(() => {
-    if (!isSignedIn) push("/sign-in");
+    if (isLoaded && !isSignedIn) push("/sign-in");
   });
 
   return (
@@ -22,8 +22,12 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white ">
           <h1>Main page</h1>
-          {isSignedIn && <h3>Welcome back, {user.firstName}</h3>}
-          {isSignedIn && <SignOutButton />}
+          {isLoaded && isSignedIn && (
+            <h3>
+              Welcome back, {user.firstName} {user.id}
+              <SignOutButton />
+            </h3>
+          )}
         </div>
       </main>
     </>
