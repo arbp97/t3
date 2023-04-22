@@ -1,16 +1,13 @@
 import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.post.findMany();
+    return ctx.prisma.post.findMany({ include: { author: true } });
   }),
+  getByAuthorId: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.post.findMany({ where: { authorId: input.id } });
+    }),
 });

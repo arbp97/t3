@@ -3,10 +3,12 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const { push } = useRouter();
+  const { data } = api.post.getAll.useQuery();
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) push("/sign-in");
@@ -23,11 +25,26 @@ const Home: NextPage = () => {
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 text-white ">
           <h1>Main page</h1>
           {isLoaded && isSignedIn && (
-            <h3>
-              Welcome back, {user.firstName} {user.id}
+            <>
+              <h3>
+                Welcome back, {user.firstName} {user.id}
+              </h3>
               <SignOutButton />
-            </h3>
+            </>
           )}
+        </div>
+        <div>
+          {data?.map((post) => (
+            <div key={post.id}>
+              <h4 className="font-bold text-red-400">
+                {post.author.name} {post.author.surname}
+              </h4>
+              <p className="text-white">{post.content}</p>
+              <p className="text-gray-400">
+                {post.createdAt.toLocaleTimeString()}
+              </p>
+            </div>
+          ))}
         </div>
       </main>
     </>
